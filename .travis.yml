@@ -34,7 +34,3 @@ matrix:
       gemfile: gemfiles/activesupport23.gemfile
     - rvm: rbx-19mode
       gemfile: gemfiles/activesupport23.gemfile
-notifications:
-  recipients:
-    - matt.campbell@vibes.com
-    - lance.cooper@vibes.com
