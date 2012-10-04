@@ -15,7 +15,8 @@ module ActiveMessaging
           @retryMax = cfg[:retryMax] || 0
           @deadLetterQueue = cfg[:deadLetterQueue] || nil
           @deadLetterQueuePrefix = cfg[:deadLetterQueuePrefix] || nil
-        
+          @transactional_receives = cfg[:transactional_receives] || false
+
           cfg[:login] ||= ""
           cfg[:passcode] ||= ""
           cfg[:host] ||= "localhost"
@@ -75,15 +76,28 @@ module ActiveMessaging
         # check each destination once, then sleep for poll_interval
         def receive(options={})
           m = @stomp_connection.receive
-          Message.new(m) if m
+          if m.present?
+            msg = Message.new(m)
+            if @transactional_receives
+              transaction_id = @stomp_connection.uuid
+              msg.headers[:transaction] = transaction_id
+              @stomp_connection.begin(transaction_id)
+            end
+            msg
+          end
         end
-      
+
         def received message, headers={}
           #check to see if the ack mode for this subscription is auto or client
           # if the ack mode is client, send an ack
           if (headers[:ack] === 'client')
             ack_headers = message.headers.has_key?(:transaction) ? { :transaction=>message.headers[:transaction]} : {}
             @stomp_connection.ack(message.headers['message-id'], ack_headers)
+          end
+
+          if @transactional_receives
+            transaction_id = message.headers[:transaction]
+            @stomp_connection.commit(transaction_id) if transaction_id
           end
         end
         
@@ -97,6 +111,11 @@ module ActiveMessaging
         end
 
         def unreceive message, headers={}
+          if @transactional_receives
+            transaction_id = message.headers[:transaction]
+            @stomp_connection.abort(transaction_id) if transaction_id
+          end
+
           retry_count = message.headers['a13g-retry-count'].to_i || 0
           transaction_id = "transaction-#{message.headers['message-id']}-#{retry_count}"
           # start a transaction, send the message back to the original destination
