@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jon Tirsen", "Andrew Kuklewicz", "Olle Jonsson", "Sylvain Perez", "Cliff Moon", "Uwe Kubosch", "Lance Cooper", "Matt Campbell"]
-  s.date = "2012-09-28"
+  s.date = "2012-10-09"
   s.description = "ActiveMessaging is an attempt to bring the simplicity and elegance of rails development to the world of messaging. Messaging, (or event-driven architecture) is widely used for enterprise integration, with frameworks such as Java's JMS, and products such as ActiveMQ, Tibco, IBM MQSeries, etc. Now supporting Rails 3 as of version 0.8.0."
   s.email = "activemessaging-discuss@googlegroups.com"
   s.extra_rdoc_files = [
@@ -77,6 +77,7 @@ Gem::Specification.new do |s|
     "lib/activemessaging/named_base.rb",
     "lib/activemessaging/processor.rb",
     "lib/activemessaging/railtie.rb",
+    "lib/activemessaging/stomp_transaction_filter.rb",
     "lib/activemessaging/test_helper.rb",
     "lib/activemessaging/threaded_poller.rb",
     "lib/activemessaging/trace_filter.rb",
@@ -109,7 +110,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/kookster/activemessaging"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.22"
+  s.rubygems_version = "1.8.24"
   s.summary = "Official activemessaging gem, now hosted on github.com/kookster. (kookster prefix temporary)"
 
   if s.respond_to? :specification_version then
