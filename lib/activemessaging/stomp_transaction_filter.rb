@@ -5,6 +5,7 @@ class StompTransactionFilter < ActiveMessaging::Filter
       set_transaction_id(message, details)
     when :outgoing
       if transaction_id = get_transaction_id(details)
+        puts " ====== setting transaction id ======== "
         message.headers[:transaction] = transaction_id
       end
     else
@@ -23,6 +24,6 @@ class StompTransactionFilter < ActiveMessaging::Filter
   end
 
   def transaction_ids
-    Thread.current[:stomp_transaction_filter] ||= Hash.new({})
+    Thread.current[:stomp_transaction_filter] ||= Hash.new
   end
 end
