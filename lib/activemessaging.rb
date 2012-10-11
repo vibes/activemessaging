@@ -43,6 +43,10 @@ module ActiveMessaging
     @@app_env  ||= (ENV['APP_ENV']  || (defined?(::Rails) && ::Rails.env)  || ENV['RAILS_ENV']  || 'development')
   end
 
+  def self.app_env=(env)
+    @@app_env = env
+  end
+
   def self.load_extensions
     require 'logger'
     require 'activemessaging/gateway'
