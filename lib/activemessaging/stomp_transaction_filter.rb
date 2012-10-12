@@ -5,7 +5,6 @@ class StompTransactionFilter < ActiveMessaging::Filter
       set_transaction_id(message, details)
     when :outgoing
       if transaction_id = get_transaction_id(details)
-        puts " ====== setting transaction id ======== "
         message.headers[:transaction] = transaction_id
       end
     else
