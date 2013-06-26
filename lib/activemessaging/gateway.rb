@@ -42,8 +42,10 @@ module ActiveMessaging
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Processing Stopped - receive interrupted, will process last message if already received"
                 # break
               #catch all others, but go back and try and recieve again
-              rescue Object=>exception
+              rescue Object => exception
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Exception from connection.receive: #{exception.message}\n" + exception.backtrace.join("\n\t")
+                @running = false
+                raise
               ensure
                 if Thread.current[:message]
                   @guard.synchronize {
@@ -53,7 +55,7 @@ module ActiveMessaging
                 else
                   # if there is no message at all, sleep
                   # maybe this should be configurable
-                  sleep(1)
+                  sleep(1) if @running
                 end
               end
               Thread.pass
@@ -61,7 +63,7 @@ module ActiveMessaging
             ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: receive loop terminated"
           end
         end
-        
+
         while @running
           trap("TERM", "EXIT")
           living = false
